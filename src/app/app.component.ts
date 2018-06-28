@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { ConfigService } from '../services/config.service';
 
 @Component({
   selector: 'app-root',
@@ -6,5 +7,17 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  title = 'app';
+
+  public pageControls = {
+    isCollapsed: true,
+    isDisplayingContent: true
+  };
+
+  constructor(private configService: ConfigService) {
+  }
+
+  public onIsDisplayingContentChange() {
+    this.configService.changeIsDisplayingContent(this.pageControls.isDisplayingContent);
+  }
+
 }
