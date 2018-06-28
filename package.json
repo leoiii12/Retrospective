@@ -8,7 +8,7 @@
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "gh-pages": "ng build --prod --output-path 'docs' --base-href '/Retrospective/'"
+    "gh-pages": "ng build --prod --output-path 'docs' --base-href 'https://leoiii12.github.io/Retrospective/'"
   },
   "private": true,
   "dependencies": {
