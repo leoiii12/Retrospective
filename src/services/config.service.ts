@@ -6,7 +6,7 @@ import { BehaviorSubject } from 'rxjs';
 })
 export class ConfigService {
 
-  private isDisplayingContentSource = new BehaviorSubject(true);
+  private isDisplayingContentSource = new BehaviorSubject(false);
   public isDisplayingContent = this.isDisplayingContentSource.asObservable();
 
   constructor() {

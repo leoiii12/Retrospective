@@ -53,7 +53,7 @@ export class BoardColumnComponent implements OnInit {
   }
 
   public onClickSuggestions() {
-    this.items.push({title: '4-words title', content: '', effectAllowed: 'move'});
+    this.items.push({title: '4-word title', content: '', effectAllowed: 'move'});
   }
 
 }
