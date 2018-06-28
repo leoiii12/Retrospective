@@ -1,7 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { DndDropEvent, DropEffect } from 'ngx-drag-drop';
 
-
 @Component({
   selector: 'app-board-column',
   templateUrl: './board-column.component.html',
