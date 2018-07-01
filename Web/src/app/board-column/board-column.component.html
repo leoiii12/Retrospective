@@ -1,0 +1,25 @@
+<div class="title">
+  <button type="button" class="btn btn-outline-primary btn-lg btn-block" (click)="onClickTitle()">{{pageControls.title}}</button>
+</div>
+
+<div class="board-items-container"
+     dndDropzone
+     dndEffectAllowed="move"
+     (dndDrop)="onDrop($event, items)">
+
+  <div class="row no-gutters">
+    <div class="col-xl-6" *ngFor="let item of items; trackBy: boardItemTrackByFn;">
+
+      <app-board-item
+        [item]="item"
+        [isDisplayingContent]="isDisplayingContent"
+        [dndDraggable]="item"
+        [dndEffectAllowed]="'move'"
+        (dndStart)="onDragStart($event)"
+        (dndMoved)="onDragged(item, items, 'move')"
+        (dndEnd)="onDragEnd($event)"></app-board-item>
+
+    </div>
+  </div>
+
+</div>

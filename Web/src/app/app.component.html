@@ -11,8 +11,9 @@
       <li class="nav-item">
         <a class="nav-link" routerLink="/home" routerLinkActive="active">Home</a>
       </li>
-      <li class="nav-item">
-        <a class="nav-link" routerLink="/board" routerLinkActive="active">Board</a>
+
+      <li class="nav-item" *ngFor="let board of boards">
+        <a class="nav-link" [routerLink]="['/board', board.boardId, board.password]" routerLinkActive="active">{{board.boardId}} - {{board.password}}</a>
       </li>
     </ul>
 

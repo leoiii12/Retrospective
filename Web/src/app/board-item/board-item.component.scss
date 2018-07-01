@@ -1,0 +1,23 @@
+.card {
+  margin-bottom: 3px;
+  margin-right: 3px;
+  text-align: right;
+
+  .card-body {
+    padding: 0.85rem;
+  }
+
+  label {
+    width: 100%;
+
+    input, textarea {
+      width: 100%;
+      border: 1px solid #EEEEEE;
+      padding: 1px 5px;
+    }
+
+    &:last-of-type {
+      margin-bottom: 0;
+    }
+  }
+}

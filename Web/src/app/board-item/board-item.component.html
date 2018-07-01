@@ -1,0 +1,10 @@
+<div class="card">
+  <div class="card-body">
+    <label>
+      <input type="text" placeholder="Title" [ngModel]="item.title" (ngModelChange)="onTitleChange($event)">
+    </label>
+    <label *ngIf="isDisplayingContent">
+      <textarea placeholder="Content" [ngModel]="item.content" (ngModelChange)="onContentChange($event)"></textarea>
+    </label>
+  </div>
+</div>

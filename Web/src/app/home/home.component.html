@@ -1,0 +1,35 @@
+<br>
+<div class="container">
+  <div class="row">
+    <div class="col">
+      <h1>Welcome, Retrospective</h1>
+
+      <hr>
+
+      <h2>Create New</h2>
+      <div class="form-group">
+        <label for="create-board-id">Board Name</label>
+        <input type="text" class="form-control" id="create-board-id" aria-describedby="board-id-help" placeholder="e.g. Sprint 1 Retrospective" [(ngModel)]="boardId">
+      </div>
+      <button type="submit" class="btn btn-primary" (click)="onClickCreate()">Create</button>
+
+      <hr>
+
+      <h2>Join</h2>
+      <div class="form-group">
+        <label for="join-board-id">Board Name</label>
+        <input type="text" class="form-control" id="join-board-id" placeholder="e.g. Sprint 1 Retrospective" [(ngModel)]="boardId">
+      </div>
+      <div class="form-group">
+        <label for="update-password">Password</label>
+        <input type="text" class="form-control" id="update-password" placeholder="XXXXXXXX" [(ngModel)]="password">
+      </div>
+      <button type="submit" class="btn btn-primary" (click)="onClickJoin()">Join</button>
+
+      <br>
+      <br>
+      <br>
+
+    </div>
+  </div>
+</div>

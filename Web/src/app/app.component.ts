@@ -1,7 +1,8 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ConfigService } from '../services/config.service';
-import { takeUntil } from 'rxjs/operators';
-import { Subject } from 'rxjs';
+import { filter, map, takeUntil } from 'rxjs/operators';
+import { Observable, Subject, zip } from 'rxjs';
+import { BoardService } from '../services/board.service';
 
 @Component({
   selector: 'app-root',
@@ -15,9 +16,12 @@ export class AppComponent implements OnInit, OnDestroy {
     isDisplayingContent: true
   };
 
+  public boards: { boardId: string, password: string }[] = [];
+
   private unsubscribe = new Subject<void>();
 
-  constructor(private configService: ConfigService) {
+  constructor(private configService: ConfigService,
+              private boardService: BoardService) {
   }
 
   ngOnInit() {
@@ -27,6 +31,15 @@ export class AppComponent implements OnInit, OnDestroy {
       )
       .subscribe((isDisplayingContent) => {
         this.pageControls.isDisplayingContent = isDisplayingContent;
+      });
+
+    zip(this.boardService.boardId, this.boardService.password)
+      .subscribe(z => {
+        if (z[0] == null && z[1] == null) {
+          this.boards = [];
+        } else {
+          this.boards.push({boardId: z[0], password: z[1]});
+        }
       });
   }
 

@@ -1,0 +1,21 @@
+:host {
+  padding: 10px;
+  display: block;
+  box-sizing: border-box;
+}
+
+h1 {
+  text-align: center;
+}
+
+.title {
+  padding: 0 5px;
+}
+
+.board-items-container {
+  height: calc(100vh - 200px);
+  transition: all 300ms ease;
+  overflow: scroll;
+  margin: 5px;
+  background: #FDFDFD;
+}
