@@ -4022,6 +4022,10 @@ ngx-drag-drop@^1.0.3:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/ngx-drag-drop/-/ngx-drag-drop-1.0.3.tgz#a7f51be09342f5b34a0cddb80562e71662e5a3ae"
 
+ngx-spinner@^6.0.0:
+  version "6.0.0"
+  resolved "https://registry.yarnpkg.com/ngx-spinner/-/ngx-spinner-6.0.0.tgz#31a441e84aa590d4af37156684641f528d9be420"
+
 no-case@^2.2.0:
   version "2.3.2"
   resolved "https://registry.yarnpkg.com/no-case/-/no-case-2.3.2.tgz#60b813396be39b3f1288a4c1ed5d1e7d28b464ac"

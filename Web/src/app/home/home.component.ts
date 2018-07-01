@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { BoardService } from '../../services/board.service';
 import { Router } from '@angular/router';
+import { NgxSpinnerService } from 'ngx-spinner';
+import { finalize } from 'rxjs/operators';
 
 @Component({
   selector: 'app-home',
@@ -13,7 +15,8 @@ export class HomeComponent implements OnInit {
   public password: string = '';
 
   constructor(private boardService: BoardService,
-              private router: Router) {
+              private router: Router,
+              private spinner: NgxSpinnerService) {
   }
 
   ngOnInit() {
@@ -25,8 +28,13 @@ export class HomeComponent implements OnInit {
       return;
     }
 
+    this.spinner.show();
+
     this.boardService
       .create(this.boardId)
+      .pipe(
+        finalize(() => this.spinner.hide())
+      )
       .subscribe(data => {
         this.router.navigate(['/board', data.boardId, data.password]);
       }, error => {

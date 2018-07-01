@@ -46,7 +46,7 @@ export class BoardService {
   }
 
   public init(boardId: string, password: string) {
-    this.boardIdSource.next(boardId);
+    this.boardIdSource.next(boardId.trim().split(' ').join('-'));
     this.passwordSource.next(password);
 
     return this;
@@ -112,8 +112,10 @@ export class BoardService {
   }
 
   public leave() {
-    this.pusher.unsubscribe(this.channel.name);
-    this.channel = null;
+    if (this.channel) {
+      this.pusher.unsubscribe(this.channel.name);
+      this.channel = null;
+    }
 
     this.boardIdSource.next(null);
     this.passwordSource.next(null);

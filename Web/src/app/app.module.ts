@@ -12,6 +12,7 @@ import { FormsModule } from '@angular/forms';
 import { BoardColumnComponent } from './board-column/board-column.component';
 import { HttpClientModule } from '@angular/common/http';
 import { BoardItemComponent } from './board-item/board-item.component';
+import { NgxSpinnerModule } from 'ngx-spinner';
 
 @NgModule({
   declarations: [
@@ -28,7 +29,8 @@ import { BoardItemComponent } from './board-item/board-item.component';
     AppRoutingModule,
     NgbModule.forRoot(),
     DndModule,
-    HttpClientModule
+    HttpClientModule,
+    NgxSpinnerModule
   ],
   providers: [],
   bootstrap: [AppComponent]

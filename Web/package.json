@@ -26,6 +26,7 @@
     "bootswatch": "^4.1.1",
     "core-js": "^2.5.4",
     "ngx-drag-drop": "^1.0.3",
+    "ngx-spinner": "^6.0.0",
     "pusher-js": "^4.2.2",
     "rxjs": "^6.0.0",
     "zone.js": "^0.8.26"

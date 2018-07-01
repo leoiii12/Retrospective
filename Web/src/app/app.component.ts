@@ -38,7 +38,7 @@ export class AppComponent implements OnInit, OnDestroy {
         if (z[0] == null && z[1] == null) {
           this.boards = [];
         } else {
-          this.boards.push({boardId: z[0], password: z[1]});
+          this.boards.push({boardId: z[0].split('-').join(' '), password: z[1]});
         }
       });
   }
