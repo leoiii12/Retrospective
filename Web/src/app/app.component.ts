@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ConfigService } from '../services/config.service';
-import { filter, map, takeUntil } from 'rxjs/operators';
-import { Observable, Subject, zip } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
+import { Subject, zip } from 'rxjs';
 import { BoardService } from '../services/board.service';
 
 @Component({
