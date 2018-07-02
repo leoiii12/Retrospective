@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace Retrospective.Boards
+namespace Retrospective.Boards.Interfaces
 {
     public interface IBoardManager
     {

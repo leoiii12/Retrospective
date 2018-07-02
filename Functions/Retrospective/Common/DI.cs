@@ -1,7 +1,6 @@
 ﻿using System;
-using Retrospective.Common;
 
-namespace Retrospective
+namespace Retrospective.Common
 {
     public static class DI
     {

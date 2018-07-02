@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Table;
+using Retrospective.Boards.Interfaces;
 
 namespace Retrospective.Boards
 {

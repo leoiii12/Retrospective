@@ -1,12 +1,15 @@
 ﻿using Retrospective.Boards;
 
-namespace Retrospective.Events
+namespace Retrospective.Functions.Dtos
 {
-    public class BoardItem_Update
+    public class UpdateBoardItemInput : BoardDto
     {
         public string Id { get; set; }
+
         public string Title { get; set; }
+
         public string Content { get; set; }
+
         public BoardItemType Type { get; set; }
     }
 }

@@ -3,6 +3,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using PusherServer;
 using Retrospective.Boards;
+using Retrospective.Boards.Interfaces;
+using Retrospective.Functions;
+using Retrospective.Functions.Dtos;
 
 namespace Retrospective.Common
 {
@@ -31,6 +34,11 @@ namespace Retrospective.Common
             services.AddSingleton<IConfiguration>(config);
             services.AddSingleton<IPusher>(pusher);
             services.AddSingleton<IBoardManager>(boardManager);
+
+            services.AddTransient<IFunction<CreateBoardInput, Board>, CreateBoardFunction>();
+            services.AddTransient<IFunction<JoinBoardInput, Board>, JoinBoardFunction>();
+            services.AddTransient<IFunction<CreateBoardItemInput>, CreateBoardItemFunction>();
+            services.AddTransient<IFunction<UpdateBoardItemInput>, UpdateBoardItemFunction>();
         }
     }
 }
