@@ -32,7 +32,7 @@ ARTIFACTS=$SCRIPT_DIR/../artifacts
 KUDU_SYNC_CMD=${KUDU_SYNC_CMD//\"}
 
 if [[ ! -n "$DEPLOYMENT_SOURCE" ]]; then
-  DEPLOYMENT_SOURCE=$SCRIPT_DIR
+  DEPLOYMENT_SOURCE=$SCRIPT_DIR/Web/dist
 fi
 
 if [[ ! -n "$NEXT_MANIFEST_PATH" ]]; then
@@ -69,6 +69,15 @@ fi
 # ----------
 
 echo Handling Basic Web Site deployment.
+
+# 0. Build
+if [[ "$IN_PLACE_DEPLOYMENT" -ne "1" ]]; then
+  npm install @angular/cli -g
+  exitWithMessageOnError "npm @angular/cli failed"
+  pushd "$SCRIPT_DIR/Web"
+  ng build --prod
+  popd
+fi
 
 # 1. KuduSync
 if [[ "$IN_PLACE_DEPLOYMENT" -ne "1" ]]; then
