@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Net;
 using System.Threading.Tasks;
+using Microsoft.Azure.WebJobs.Host;
 using Newtonsoft.Json;
 using PusherServer;
 using Retrospective.Boards.Interfaces;
@@ -23,13 +24,13 @@ namespace Retrospective.Functions
             _boardManager = boardManager;
         }
 
-        public async Task InvokeAsync(UpdateBoardItemInput input)
+        public async Task InvokeAsync(UpdateBoardItemInput input, TraceWriter log)
         {
             var board = await _boardManager.GetAsync(input.BoardId, input.Password);
             if (board == null) throw new Exception("The board does not exist.");
 
             var triggerResult = await _pusher.TriggerAsync(board.ToString(), "BoardItem-Update", new BoardItem_Update {Id = input.Id, Title = input.Title, Content = input.Content, Type = input.Type});
-            if (triggerResult.StatusCode != HttpStatusCode.OK) throw new Exception("Cannot publish \"BoardItem-Create\". " + JsonConvert.SerializeObject(triggerResult));
+            if (triggerResult.StatusCode != HttpStatusCode.OK) throw new UserFriendlyException("Cannot publish \"BoardItem-Create\". " + JsonConvert.SerializeObject(triggerResult));
         }
     }
 }

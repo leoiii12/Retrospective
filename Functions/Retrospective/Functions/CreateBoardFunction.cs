@@ -1,5 +1,5 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+using Microsoft.Azure.WebJobs.Host;
 using Retrospective.Boards;
 using Retrospective.Boards.Interfaces;
 using Retrospective.Common;
@@ -16,10 +16,10 @@ namespace Retrospective.Functions
             _boardManager = boardManager;
         }
 
-        public async Task<Board> InvokeAsync(CreateBoardInput input)
+        public async Task<Board> InvokeAsync(CreateBoardInput input, TraceWriter log)
         {
             var board = await _boardManager.CreateAsync(input.BoardId);
-            if (board == null) throw new Exception("Cannot create the board.");
+            if (board == null) throw new UserFriendlyException("Cannot create the board.");
 
             return board;
         }

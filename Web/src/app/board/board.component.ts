@@ -83,7 +83,7 @@ export class BoardComponent implements OnInit, OnDestroy {
     this.unsubscribe.next();
     this.unsubscribe.complete();
 
-    this.boardService.leave();
+    this.boardService.reset();
   }
 
 }

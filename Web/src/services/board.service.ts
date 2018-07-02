@@ -53,8 +53,6 @@ export class BoardService {
   }
 
   public join() {
-    if (this.channel) this.leave();
-
     return this.http
       .post<any>('https://retrospective-api.azurewebsites.net/api/JoinBoard', {
         boardId: this.boardIdSource.getValue(),
@@ -111,7 +109,7 @@ export class BoardService {
       );
   }
 
-  public leave() {
+  public reset() {
     if (this.channel) {
       this.pusher.unsubscribe(this.channel.name);
       this.channel = null;

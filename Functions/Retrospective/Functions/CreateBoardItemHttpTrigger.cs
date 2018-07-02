@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -21,7 +22,19 @@ namespace Retrospective.Functions
             var inputString = await req.ReadAsStringAsync();
             var input = JsonConvert.DeserializeObject<CreateBoardItemInput>(inputString);
 
-            await DI.Container.GetService<IFunction<CreateBoardItemInput>>().InvokeAsync(input);
+            try
+            {
+                await DI.Container.GetService<IFunction<CreateBoardItemInput>>().InvokeAsync(input, log);
+            }
+            catch (UserFriendlyException exception)
+            {
+                return Output.Error(exception.Message);
+            }
+            catch (Exception exception)
+            {
+                log.Error(exception.Message, exception);
+                return Output.InternalError();
+            }
 
             return Output.Ok();
         }

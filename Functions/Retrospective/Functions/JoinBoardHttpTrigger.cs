@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -19,12 +20,24 @@ namespace Retrospective.Functions
             [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = null)]
             HttpRequest req, TraceWriter log)
         {
-            log.Info("JoinBoard function processed a request...");
-
             var inputString = await req.ReadAsStringAsync();
             var input = JsonConvert.DeserializeObject<JoinBoardInput>(inputString);
 
-            var board = await DI.Container.GetService<IFunction<JoinBoardInput, Board>>().InvokeAsync(input);
+            Board board;
+
+            try
+            {
+                board = await DI.Container.GetService<IFunction<JoinBoardInput, Board>>().InvokeAsync(input, log);
+            }
+            catch (UserFriendlyException exception)
+            {
+                return Output.Error(exception.Message);
+            }
+            catch (Exception exception)
+            {
+                log.Error(exception.Message, exception);
+                return Output.InternalError();
+            }
 
             return Output.Ok(new
             {
