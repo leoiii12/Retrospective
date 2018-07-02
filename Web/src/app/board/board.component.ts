@@ -69,7 +69,7 @@ export class BoardComponent implements OnInit, OnDestroy {
     this.activatedRoute
       .params
       .pipe(
-        flatMap(params => this.boardService.init(params.boardId, params.password).join())
+        flatMap(params => this.boardService.join(params.boardId, params.password))
       )
       .subscribe(output => {
       }, error => {

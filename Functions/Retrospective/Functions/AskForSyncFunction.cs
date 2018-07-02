@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Net;
 using System.Threading.Tasks;
 using Microsoft.Azure.WebJobs.Host;
@@ -11,26 +11,26 @@ using Retrospective.Functions.Dtos;
 
 namespace Retrospective.Functions
 {
-    public class CreateBoardItemFunction : IFunction<CreateBoardItemInput>
+    public class AskForSyncFunction : IFunction<AskForSyncInput>
     {
         private readonly IBoardManager _boardManager;
         private readonly IPusher _pusher;
 
-        public CreateBoardItemFunction(
-            IPusher pusher,
-            IBoardManager boardManager)
+        public AskForSyncFunction(
+            IBoardManager boardManager,
+            IPusher pusher)
         {
-            _pusher = pusher;
             _boardManager = boardManager;
+            _pusher = pusher;
         }
 
-        public async Task InvokeAsync(CreateBoardItemInput input, TraceWriter log)
+        public async Task InvokeAsync(AskForSyncInput input, TraceWriter log)
         {
             var board = await _boardManager.GetAsync(input.BoardId, input.Password);
             if (board == null) throw new UserFriendlyException("The board does not exist.");
 
-            var triggerResult = await _pusher.TriggerAsync(board.ToString(), "BoardItem-Create", new BoardItem_Create {Type = input.Type});
-            if (triggerResult.StatusCode != HttpStatusCode.OK) throw new ApplicationException("Cannot publish \"BoardItem-Create\". " + JsonConvert.SerializeObject(triggerResult));
+            var triggerResult = await _pusher.TriggerAsync(board.ToString(), "Board-AskForSync", new Board_AskForSync {ClientId = input.ClientId});
+            if (triggerResult.StatusCode != HttpStatusCode.OK) throw new ApplicationException("Cannot publish \"Board-AskForSync\". " + JsonConvert.SerializeObject(triggerResult));
         }
     }
 }

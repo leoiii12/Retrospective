@@ -30,7 +30,7 @@ namespace Retrospective.Functions
             if (board == null) throw new Exception("The board does not exist.");
 
             var triggerResult = await _pusher.TriggerAsync(board.ToString(), "BoardItem-Update", new BoardItem_Update {Id = input.Id, Title = input.Title, Content = input.Content, Type = input.Type});
-            if (triggerResult.StatusCode != HttpStatusCode.OK) throw new UserFriendlyException("Cannot publish \"BoardItem-Create\". " + JsonConvert.SerializeObject(triggerResult));
+            if (triggerResult.StatusCode != HttpStatusCode.OK) throw new ApplicationException("Cannot publish \"BoardItem-Create\". " + JsonConvert.SerializeObject(triggerResult));
         }
     }
 }

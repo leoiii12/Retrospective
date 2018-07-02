@@ -12,21 +12,19 @@ using Retrospective.Functions.Dtos;
 
 namespace Retrospective.Functions
 {
-    public static class JoinBoardHttpTrigger
+    public static class GiveSyncHttpTrigger
     {
-        [FunctionName("JoinBoard")]
+        [FunctionName("GiveSync")]
         public static async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = null)]
             HttpRequest req, TraceWriter log)
         {
             var inputString = await req.ReadAsStringAsync();
-            var input = JsonConvert.DeserializeObject<JoinBoardInput>(inputString);
-
-            JoinBoardOutput output;
+            var input = JsonConvert.DeserializeObject<GiveSyncInput>(inputString);
 
             try
             {
-                output = await DI.Container.GetService<IFunction<JoinBoardInput, JoinBoardOutput>>().InvokeAsync(input, log);
+                await DI.Container.GetService<IFunction<GiveSyncInput>>().InvokeAsync(input, log);
             }
             catch (UserFriendlyException exception)
             {
@@ -38,7 +36,7 @@ namespace Retrospective.Functions
                 return Output.InternalError();
             }
 
-            return Output.Ok(output);
+            return Output.Ok();
         }
     }
 }

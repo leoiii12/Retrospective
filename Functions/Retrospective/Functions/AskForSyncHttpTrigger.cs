@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -7,26 +8,25 @@ using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Azure.WebJobs.Host;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
+using Retrospective.Boards;
 using Retrospective.Common;
 using Retrospective.Functions.Dtos;
 
 namespace Retrospective.Functions
 {
-    public static class JoinBoardHttpTrigger
+    public static class AskForSyncHttpTrigger
     {
-        [FunctionName("JoinBoard")]
+        [FunctionName("AskForSync")]
         public static async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = null)]
             HttpRequest req, TraceWriter log)
         {
             var inputString = await req.ReadAsStringAsync();
-            var input = JsonConvert.DeserializeObject<JoinBoardInput>(inputString);
-
-            JoinBoardOutput output;
+            var input = JsonConvert.DeserializeObject<AskForSyncInput>(inputString);
 
             try
             {
-                output = await DI.Container.GetService<IFunction<JoinBoardInput, JoinBoardOutput>>().InvokeAsync(input, log);
+                await DI.Container.GetService<IFunction<AskForSyncInput>>().InvokeAsync(input, log);
             }
             catch (UserFriendlyException exception)
             {
@@ -38,7 +38,7 @@ namespace Retrospective.Functions
                 return Output.InternalError();
             }
 
-            return Output.Ok(output);
+            return Output.Ok();
         }
     }
 }

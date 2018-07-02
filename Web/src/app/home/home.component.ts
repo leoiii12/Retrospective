@@ -36,7 +36,7 @@ export class HomeComponent implements OnInit {
         finalize(() => this.spinner.hide())
       )
       .subscribe(data => {
-        this.router.navigate(['/board', data.boardId, data.password]);
+        this.navigateToBoard(this.boardId, data.password);
       }, error => {
         console.log(error);
       });
@@ -48,7 +48,11 @@ export class HomeComponent implements OnInit {
       return;
     }
 
-    this.router.navigate(['/board', this.boardId, this.password]);
+    this.navigateToBoard(this.boardId, this.password);
+  }
+
+  private navigateToBoard(boardId: string, password: string) {
+    this.router.navigate(['/board', boardId.trim().split(' ').join('-'), password]);
   }
 
 }

@@ -7,7 +7,6 @@ using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Azure.WebJobs.Host;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
-using Retrospective.Boards;
 using Retrospective.Common;
 using Retrospective.Functions.Dtos;
 
@@ -23,11 +22,11 @@ namespace Retrospective.Functions
             var inputString = await req.ReadAsStringAsync();
             var input = JsonConvert.DeserializeObject<CreateBoardInput>(inputString);
 
-            Board board;
+            CreateBoardOutput output;
 
             try
             {
-                board = await DI.Container.GetService<IFunction<CreateBoardInput, Board>>().InvokeAsync(input, log);
+                output = await DI.Container.GetService<IFunction<CreateBoardInput, CreateBoardOutput>>().InvokeAsync(input, log);
             }
             catch (UserFriendlyException exception)
             {
@@ -39,7 +38,7 @@ namespace Retrospective.Functions
                 return Output.InternalError();
             }
 
-            return Output.Ok(board.ToDto());
+            return Output.Ok(output);
         }
     }
 }

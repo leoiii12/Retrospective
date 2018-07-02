@@ -35,10 +35,14 @@ namespace Retrospective.Common
             services.AddSingleton<IPusher>(pusher);
             services.AddSingleton<IBoardManager>(boardManager);
 
-            services.AddTransient<IFunction<CreateBoardInput, Board>, CreateBoardFunction>();
-            services.AddTransient<IFunction<JoinBoardInput, Board>, JoinBoardFunction>();
+            services.AddTransient<IFunction<CreateBoardInput, CreateBoardOutput>, CreateBoardFunction>();
+            services.AddTransient<IFunction<JoinBoardInput, JoinBoardOutput>, JoinBoardFunction>();
             services.AddTransient<IFunction<CreateBoardItemInput>, CreateBoardItemFunction>();
             services.AddTransient<IFunction<UpdateBoardItemInput>, UpdateBoardItemFunction>();
+
+            services.AddTransient<IFunction<AskForSyncInput>, AskForSyncFunction>();
+            services.AddTransient<IFunction<GiveSyncInput>, GiveSyncFunction>();
+
         }
     }
 }

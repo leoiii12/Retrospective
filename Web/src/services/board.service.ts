@@ -12,6 +12,8 @@ import { BoardItem } from '../types/board-item.interface';
 })
 export class BoardService {
 
+  public endpoint: string = 'https://retrospective-api.azurewebsites.net/api/';
+
   private pusher: Pusher;
   private channel: Channel;
 
@@ -20,6 +22,9 @@ export class BoardService {
 
   private passwordSource: BehaviorSubject<string> = new BehaviorSubject<string>(null);
   public password: Observable<string> = this.passwordSource.asObservable();
+
+  private clientIdSource: BehaviorSubject<string> = new BehaviorSubject<string>(null);
+  public clientId: Observable<string> = this.clientIdSource.asObservable();
 
   private itemsSource: BehaviorSubject<BoardItem[]> = new BehaviorSubject<BoardItem[]>([]);
   public items: Observable<BoardItem[]> = this.itemsSource.asObservable();
@@ -33,11 +38,11 @@ export class BoardService {
 
   public create(boardId: string): Observable<{ boardId: string, password: string }> {
     return this.http
-      .post<any>('https://retrospective-api.azurewebsites.net/api/CreateBoard', {boardId: boardId})
+      .post<any>(this.endpoint + 'CreateBoard', {boardId: boardId})
       .pipe(
         map(output => {
           if (output.success) {
-            return <{ boardId: string, password: string }> output.data;
+            return <{ boardId: string, password: string }> output.data.board;
           } else {
             throw new Error(output.message);
           }
@@ -45,16 +50,12 @@ export class BoardService {
       );
   }
 
-  public init(boardId: string, password: string) {
+  public join(boardId: string, password: string) {
     this.boardIdSource.next(boardId.trim().split(' ').join('-'));
     this.passwordSource.next(password);
 
-    return this;
-  }
-
-  public join() {
     return this.http
-      .post<any>('https://retrospective-api.azurewebsites.net/api/JoinBoard', {
+      .post<any>(this.endpoint + 'JoinBoard', {
         boardId: this.boardIdSource.getValue(),
         password: this.passwordSource.getValue()
       })
@@ -71,6 +72,8 @@ export class BoardService {
               this.onItemUpdate(eventData);
             });
 
+            this.clientIdSource.next(data.clientId);
+
             return output;
           } else {
             throw new Error(output.message);
@@ -81,7 +84,7 @@ export class BoardService {
 
   public createItem(type: BoardItemType) {
     return this.http
-      .post('https://retrospective-api.azurewebsites.net/api/CreateBoardItem', {
+      .post(this.endpoint + 'CreateBoardItem', {
         boardId: this.boardIdSource.getValue(),
         password: this.passwordSource.getValue(),
         type: type
@@ -90,7 +93,7 @@ export class BoardService {
 
   public updateItem(id: string, title: string, content: string, type: BoardItemType) {
     return this.http
-      .post<any>('https://retrospective-api.azurewebsites.net/api/UpdateBoardItem', {
+      .post<any>(this.endpoint + 'UpdateBoardItem', {
         boardId: this.boardIdSource.getValue(),
         password: this.passwordSource.getValue(),
         id: id,
@@ -103,7 +106,7 @@ export class BoardService {
           if (output.success) {
             return output;
           } else {
-            throw new Error();
+            throw new Error(output.message);
           }
         })
       );
