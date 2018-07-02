@@ -13,7 +13,7 @@
       </li>
 
       <li class="nav-item" *ngFor="let board of boards">
-        <a class="nav-link" [routerLink]="['/board', board.boardId, board.password]" routerLinkActive="active">{{board.boardId}} - {{board.password}}</a>
+        <a class="nav-link" [routerLink]="['/board', board.boardId, board.password]" routerLinkActive="active">{{board.boardId.split('-').join(' ')}} - {{board.password}}</a>
       </li>
     </ul>
 
