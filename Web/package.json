@@ -4,11 +4,10 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": "ng build",
+    "build": "ng build --prod --progress",
     "test": "ng test",
     "lint": "ng lint",
-    "e2e": "ng e2e",
-    "gh-pages": "ng build --prod --output-path '../docs' --base-href 'https://leoiii12.github.io/Retrospective/'"
+    "e2e": "ng e2e"
   },
   "private": true,
   "dependencies": {
