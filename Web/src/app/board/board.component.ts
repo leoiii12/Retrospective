@@ -71,8 +71,7 @@ export class BoardComponent implements OnInit, OnDestroy {
       .pipe(
         flatMap(params => this.boardService.init(params.boardId, params.password).join())
       )
-      .subscribe(success => {
-        console.log(success);
+      .subscribe(output => {
       }, error => {
         alert(error);
         this.router.navigate(['/home']);

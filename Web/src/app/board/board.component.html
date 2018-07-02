@@ -1,9 +1,9 @@
 <div class="container-fluid">
   <div class="row">
 
-    <app-board-column class="col" [type]="BoardItemType.Well" [items]="wellItems" [isDisplayingContent]="pageControls.isDisplayingContent"></app-board-column>
-    <app-board-column class="col" [type]="BoardItemType.NotWell" [items]="notWellItems" [isDisplayingContent]="pageControls.isDisplayingContent"></app-board-column>
-    <app-board-column class="col" [type]="BoardItemType.Suggested" [items]="suggestedItems" [isDisplayingContent]="pageControls.isDisplayingContent"></app-board-column>
+    <app-board-column class="col col-6 col-md" [type]="BoardItemType.Well" [items]="wellItems" [isDisplayingContent]="pageControls.isDisplayingContent"></app-board-column>
+    <app-board-column class="col col-6 col-md" [type]="BoardItemType.NotWell" [items]="notWellItems" [isDisplayingContent]="pageControls.isDisplayingContent"></app-board-column>
+    <app-board-column class="col col-12 col-md" [type]="BoardItemType.Suggested" [items]="suggestedItems" [isDisplayingContent]="pageControls.isDisplayingContent"></app-board-column>
 
   </div>
 </div>
