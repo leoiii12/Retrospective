@@ -72,10 +72,10 @@ echo Handling Basic Web Site deployment.
 
 # 0. Build
 if [[ "$IN_PLACE_DEPLOYMENT" -ne "1" ]]; then
-  npm install @angular/cli -g
+  npm install @angular/cli -g --silent
   exitWithMessageOnError "npm @angular/cli failed"
   pushd "$SCRIPT_DIR/Web"
-  ng build --prod
+  ng build --prod --progress
   popd
 fi
 
