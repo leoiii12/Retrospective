@@ -29,7 +29,7 @@ namespace Retrospective.Functions
             var board = await _boardManager.GetAsync(input.BoardId, input.Password);
             if (board == null) throw new UserFriendlyException("The board does not exist.");
 
-            var triggerResult = await _pusher.TriggerAsync(board.ToString(), "Board-GiveSync", new Board_GiveSync {ClientId = input.ClientId, BoardItems = input.BoardItems});
+            var triggerResult = await _pusher.TriggerAsync(board.ToString(), "Board-GiveSync", new Board_GiveSync {AskForSyncClientId = input.AskForSyncClientId, BoardItems = input.BoardItems});
             if (triggerResult.StatusCode != HttpStatusCode.OK) throw new ApplicationException("Cannot publish \"Board-GiveSync\". " + JsonConvert.SerializeObject(triggerResult));
         }
     }
