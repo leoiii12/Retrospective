@@ -17,8 +17,7 @@ namespace Retrospective.Functions
 
         public async Task<CreateBoardOutput> InvokeAsync(CreateBoardInput input, TraceWriter log)
         {
-            var board = await _boardManager.CreateAsync(input.BoardId);
-            if (board == null) throw new UserFriendlyException("Cannot create the board.");
+            var board = await _boardManager.CreateAsync(input.BoardId) ?? throw new UserFriendlyException("Cannot create the board.");
 
             return new CreateBoardOutput
             {

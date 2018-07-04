@@ -26,8 +26,7 @@ namespace Retrospective.Functions
 
         public async Task<JoinBoardOutput> InvokeAsync(JoinBoardInput input, TraceWriter log)
         {
-            var board = await _boardManager.GetAsync(input.BoardId, input.Password);
-            if (board == null) throw new Exception("The board does not exist.");
+            var board = await _boardManager.GetAsync(input.BoardId, input.Password) ?? throw new Exception("The board does not exist.");
 
             var clientId = Guid.NewGuid().ToString();
 
