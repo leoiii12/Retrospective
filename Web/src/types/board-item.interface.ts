@@ -5,5 +5,6 @@ export interface BoardItem {
   title: string;
   content: string;
   type: BoardItemType;
+  dateTime: Date;
 }
 

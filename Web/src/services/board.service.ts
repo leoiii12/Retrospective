@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import * as PusherJS from 'pusher-js';
 import { Channel, Pusher } from 'pusher-js';
 import { HttpClient } from '@angular/common/http';
-import { filter, map } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { BoardItemType } from '../types/board-item-type.enum';
 import { BoardItem } from '../types/board-item.interface';
@@ -29,10 +29,30 @@ export class BoardService {
   private itemsSource: BehaviorSubject<BoardItem[]> = new BehaviorSubject<BoardItem[]>([]);
   public items: Observable<BoardItem[]> = this.itemsSource.asObservable();
 
+  private itemChange: Subject<BoardItem> = new Subject<BoardItem>();
+
   constructor(private http: HttpClient) {
     this.pusher = new PusherJS('023cc24c6e0f818d4e15', {
       cluster: 'ap1',
       encrypted: true
+    });
+
+    this.itemChange.subscribe(changedItem => {
+      const items = this.itemsSource.getValue();
+      const item = items.find(i => i.id === changedItem.id);
+
+      if (item) {
+        item.title = changedItem.title;
+        item.content = changedItem.content;
+        item.type = changedItem.type;
+        item.dateTime = changedItem.dateTime;
+
+        this.itemsSource.next(items);
+      } else {
+        items.push(changedItem);
+
+        this.itemsSource.next(items);
+      }
     });
   }
 
@@ -64,6 +84,8 @@ export class BoardService {
           if (output.success) {
             const data = output.data;
 
+            this.clientIdSource.next(data.clientId);
+
             this.channel = this.pusher.subscribe(data.channel);
             this.channel.bind('BoardItem-Create', (eventData) => {
               this.onItemCreate(eventData);
@@ -71,8 +93,11 @@ export class BoardService {
             this.channel.bind('BoardItem-Update', (eventData) => {
               this.onItemUpdate(eventData);
             });
+            this.channel.bind('Board-AskForSync', (eventData) => {
+              if (eventData.ClientId != this.clientIdSource.getValue()) this.onAskForSync(eventData);
+            });
 
-            this.clientIdSource.next(data.clientId);
+            this.askForSync();
 
             return output;
           } else {
@@ -112,6 +137,34 @@ export class BoardService {
       );
   }
 
+  public askForSync() {
+    if (!this.channel) return;
+
+    this.http
+      .post<any>(this.endpoint + 'AskForSync', {
+        boardId: this.boardIdSource.getValue(),
+        password: this.passwordSource.getValue(),
+        clientId: this.clientIdSource.getValue()
+      })
+      .subscribe(() => {
+        this.channel.bind('Board-GiveSync', (eventData) => {
+          let recievedItems = eventData.BoardItems;
+
+          if (!recievedItems)
+            return;
+
+          for (let item of recievedItems) {
+            this.itemChange.next({ id: item.Id, title: item.Title, content: item.Content, type: item.Type, dateTime: item.DateTime });
+          }
+        });
+
+        // Only 10 seconds
+        setTimeout(() => {
+          this.channel.unbind('Board-GiveSync');
+        }, 10000);
+      });
+  }
+
   public reset() {
     if (this.channel) {
       this.pusher.unsubscribe(this.channel.name);
@@ -124,21 +177,22 @@ export class BoardService {
   }
 
   private onItemCreate(eventData) {
-    const items = this.itemsSource.getValue();
-    items.push({id: eventData.Id, title: '', content: '', type: eventData.Type});
-
-    this.itemsSource.next(items);
+    this.itemChange.next({ id: eventData.Id, title: '', content: '', type: eventData.Type, dateTime: null });
   }
 
   private onItemUpdate(eventData) {
-    const items = this.itemsSource.getValue();
-    const item = items.find(i => i.id === eventData.Id);
+    this.itemChange.next({ id: eventData.Id, title: eventData.Title, content: eventData.Content, type: eventData.Type, dateTime: eventData.DateTime });
+  }
 
-    item.title = eventData.Title;
-    item.content = eventData.Content;
-    item.type = eventData.Type;
-
-    this.itemsSource.next(items);
+  private onAskForSync(eventData) {
+    this.http
+      .post<any>(this.endpoint + 'GiveSync', {
+        boardId: this.boardIdSource.getValue(),
+        password: this.passwordSource.getValue(),
+        askForSyncClientId: eventData.askForSyncClientId,
+        BoardItems: this.itemsSource.getValue()
+      })
+      .subscribe();
   }
 
 }
