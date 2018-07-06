@@ -1,6 +1,6 @@
 using System;
 
-namespace Retrospective.Functions
+namespace Retrospective.Functions.Dtos
 {
     public class JoinBoardOutput
     {

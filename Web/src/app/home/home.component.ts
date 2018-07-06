@@ -31,7 +31,7 @@ export class HomeComponent implements OnInit {
     this.spinner.show();
 
     this.boardService
-      .create(this.boardId)
+      .createBoard(this.boardId)
       .pipe(
         finalize(() => this.spinner.hide())
       )

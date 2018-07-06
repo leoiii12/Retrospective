@@ -28,8 +28,8 @@ namespace Retrospective.Functions
         {
             var board = await _boardManager.GetAsync(input.BoardId, input.Password) ?? throw new Exception("The board does not exist.");
 
-            var triggerResult = await _pusher.TriggerAsync(board.ToString(), "BoardItem-Update", new BoardItem_Update {Id = input.Id, Title = input.Title, Content = input.Content, Type = input.Type});
-            if (triggerResult.StatusCode != HttpStatusCode.OK) throw new ApplicationException("Cannot publish \"BoardItem-Create\". " + JsonConvert.SerializeObject(triggerResult));
+            var triggerResult = await _pusher.TriggerAsync(board.ToString(), BoardItem_Update.EventName, new BoardItem_Update {Id = input.Id, Title = input.Title, Content = input.Content, Type = input.Type});
+            if (triggerResult.StatusCode != HttpStatusCode.OK) throw new ApplicationException($"Cannot publish {BoardItem_Update.EventName}. {JsonConvert.SerializeObject(triggerResult)}");
         }
     }
 }

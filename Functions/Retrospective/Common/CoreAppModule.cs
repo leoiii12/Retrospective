@@ -42,7 +42,7 @@ namespace Retrospective.Common
 
             services.AddTransient<IFunction<AskForSyncInput>, AskForSyncFunction>();
             services.AddTransient<IFunction<GiveSyncInput>, GiveSyncFunction>();
-
+            services.AddTransient<IFunction<NoGiveSyncInput>, NoGiveSyncFunction>();
         }
     }
 }

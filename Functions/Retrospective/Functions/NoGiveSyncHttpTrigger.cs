@@ -12,19 +12,21 @@ using Retrospective.Functions.Dtos;
 
 namespace Retrospective.Functions
 {
-    public static class AskForSyncHttpTrigger
+    public static class NoGiveSyncHttpTrigger
     {
-        [FunctionName("AskForSync")]
+        [FunctionName("NoGiveSync")]
         public static async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = null)]
             HttpRequest req, TraceWriter log)
         {
+            log.Info("NoGiveSync function processed a request...");
+
             var inputString = await req.ReadAsStringAsync();
-            var input = JsonConvert.DeserializeObject<AskForSyncInput>(inputString);
+            var input = JsonConvert.DeserializeObject<NoGiveSyncInput>(inputString);
 
             try
             {
-                await DI.Container.GetService<IFunction<AskForSyncInput>>().InvokeAsync(input, log);
+                await DI.Container.GetService<IFunction<NoGiveSyncInput>>().InvokeAsync(input, log);
             }
             catch (UserFriendlyException exception)
             {

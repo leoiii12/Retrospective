@@ -56,7 +56,7 @@ export class BoardService {
     });
   }
 
-  public create(boardId: string): Observable<{ boardId: string, password: string }> {
+  public createBoard(boardId: string): Observable<{ boardId: string, password: string }> {
     return this.http
       .post<any>(this.endpoint + 'CreateBoard', {boardId: boardId})
       .pipe(
@@ -70,7 +70,7 @@ export class BoardService {
       );
   }
 
-  public join(boardId: string, password: string) {
+  public joinBoard(boardId: string, password: string) {
     this.boardIdSource.next(boardId.trim().split(' ').join('-'));
     this.passwordSource.next(password);
 
@@ -87,17 +87,19 @@ export class BoardService {
             this.clientIdSource.next(data.clientId);
 
             this.channel = this.pusher.subscribe(data.channel);
-            this.channel.bind('BoardItem-Create', (eventData) => {
+            this.channel.bind('BoardItem_Create', (eventData) => {
               this.onItemCreate(eventData);
             });
-            this.channel.bind('BoardItem-Update', (eventData) => {
+            this.channel.bind('BoardItem_Update', (eventData) => {
               this.onItemUpdate(eventData);
             });
-            this.channel.bind('Board-AskForSync', (eventData) => {
-              if (eventData.ClientId != this.clientIdSource.getValue()) this.onAskForSync(eventData);
+            this.channel.bind('Sync_AskForSync', (eventData) => {
+              this.onAskForSync(eventData);
             });
 
-            this.askForSync();
+            setTimeout(() => {
+              this.askForSync();
+            }, 1000);
 
             return output;
           } else {
@@ -137,35 +139,7 @@ export class BoardService {
       );
   }
 
-  public askForSync() {
-    if (!this.channel) return;
-
-    this.http
-      .post<any>(this.endpoint + 'AskForSync', {
-        boardId: this.boardIdSource.getValue(),
-        password: this.passwordSource.getValue(),
-        clientId: this.clientIdSource.getValue()
-      })
-      .subscribe(() => {
-        this.channel.bind('Board-GiveSync', (eventData) => {
-          let recievedItems = eventData.BoardItems;
-
-          if (!recievedItems)
-            return;
-
-          for (let item of recievedItems) {
-            this.itemChange.next({ id: item.Id, title: item.Title, content: item.Content, type: item.Type, dateTime: item.DateTime });
-          }
-        });
-
-        // Only 10 seconds
-        setTimeout(() => {
-          this.channel.unbind('Board-GiveSync');
-        }, 10000);
-      });
-  }
-
-  public reset() {
+  public resetAll() {
     if (this.channel) {
       this.pusher.unsubscribe(this.channel.name);
       this.channel = null;
@@ -176,23 +150,84 @@ export class BoardService {
     this.itemsSource.next([]);
   }
 
+  public askForSync() {
+    if (!this.channel) return;
+
+    this.http
+      .post<any>(this.endpoint + 'AskForSync', {
+        boardId: this.boardIdSource.getValue(),
+        password: this.passwordSource.getValue(),
+        clientId: this.clientIdSource.getValue()
+      })
+      .subscribe(() => {
+        let hasReceived = false;
+
+        this.channel.bind('Sync_GiveSync', (eventData) => {
+          const receivedItems = eventData.BoardItems;
+          if (!receivedItems)
+            return;
+
+          for (const item of receivedItems) {
+            this.itemChange.next({id: item.Id, title: item.Title, content: item.Content, type: item.Type, dateTime: item.DateTime});
+          }
+
+          hasReceived = true;
+        });
+
+        // Wait for 5 seconds
+        setTimeout(() => {
+          if (hasReceived) {
+            this.channel.unbind('Board_GiveSync');
+          } else {
+            this.noGiveSync();
+          }
+        }, 5000);
+      });
+  }
+
+  public noGiveSync() {
+    this.http
+      .post<any>(this.endpoint + 'NoGiveSync', {
+        boardId: this.boardIdSource.getValue(),
+        password: this.passwordSource.getValue()
+      })
+      .subscribe();
+  }
+
   private onItemCreate(eventData) {
-    this.itemChange.next({ id: eventData.Id, title: '', content: '', type: eventData.Type, dateTime: null });
+    this.itemChange.next({id: eventData.Id, title: '', content: '', type: eventData.Type, dateTime: null});
   }
 
   private onItemUpdate(eventData) {
-    this.itemChange.next({ id: eventData.Id, title: eventData.Title, content: eventData.Content, type: eventData.Type, dateTime: eventData.DateTime });
+    this.itemChange.next({
+      id: eventData.Id,
+      title: eventData.Title,
+      content: eventData.Content,
+      type: eventData.Type,
+      dateTime: eventData.DateTime
+    });
+  }
+
+  private hasSynced(): boolean {
+    return true;
   }
 
   private onAskForSync(eventData) {
-    this.http
-      .post<any>(this.endpoint + 'GiveSync', {
-        boardId: this.boardIdSource.getValue(),
-        password: this.passwordSource.getValue(),
-        askForSyncClientId: eventData.askForSyncClientId,
-        BoardItems: this.itemsSource.getValue()
-      })
-      .subscribe();
+    const notMyself = eventData.AskForSyncClientId !== this.clientIdSource.getValue();
+
+    if (
+      (eventData.HasMaster === true && notMyself) ||
+      (eventData.HasMaster === false && this.hasSynced())) {
+
+      this.http
+        .post<any>(this.endpoint + 'GiveSync', {
+          boardId: this.boardIdSource.getValue(),
+          password: this.passwordSource.getValue(),
+          askForSyncClientId: eventData.AskForSyncClientId,
+          boardItems: this.itemsSource.getValue()
+        })
+        .subscribe();
+    }
   }
 
 }

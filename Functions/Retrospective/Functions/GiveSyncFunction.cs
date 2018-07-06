@@ -28,8 +28,8 @@ namespace Retrospective.Functions
         {
             var board = await _boardManager.GetAsync(input.BoardId, input.Password) ?? throw new UserFriendlyException("The board does not exist.");
 
-            var triggerResult = await _pusher.TriggerAsync(board.ToString(), "Board-GiveSync", new Board_GiveSync {AskForSyncClientId = input.AskForSyncClientId, BoardItems = input.BoardItems});
-            if (triggerResult.StatusCode != HttpStatusCode.OK) throw new ApplicationException("Cannot publish \"Board-GiveSync\". " + JsonConvert.SerializeObject(triggerResult));
+            var triggerResult = await _pusher.TriggerAsync(board.ToString(), Sync_GiveSync.EventName, new Sync_GiveSync {AskForSyncClientId = input.AskForSyncClientId, BoardItems = input.BoardItems});
+            if (triggerResult.StatusCode != HttpStatusCode.OK) throw new ApplicationException($"Cannot publish {Sync_GiveSync.EventName}. {JsonConvert.SerializeObject(triggerResult)}");
         }
     }
 }

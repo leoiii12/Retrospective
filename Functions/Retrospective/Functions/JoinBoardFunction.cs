@@ -30,8 +30,8 @@ namespace Retrospective.Functions
 
             var clientId = Guid.NewGuid().ToString();
 
-            var triggerResult = await _pusher.TriggerAsync(board.ToString(), "Board-Join", new Board_Join {ClientId = clientId});
-            if (triggerResult.StatusCode != HttpStatusCode.OK) log.Error(JsonConvert.SerializeObject(triggerResult));
+            var triggerResult = await _pusher.TriggerAsync(board.ToString(), Board_Join.EventName, new Board_Join {ClientId = clientId});
+            if (triggerResult.StatusCode != HttpStatusCode.OK) log.Error($"Cannot publish {Board_Join.EventName}. {JsonConvert.SerializeObject(triggerResult)}");
 
             return new JoinBoardOutput
             {

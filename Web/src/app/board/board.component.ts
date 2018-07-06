@@ -69,7 +69,7 @@ export class BoardComponent implements OnInit, OnDestroy {
     this.activatedRoute
       .params
       .pipe(
-        flatMap(params => this.boardService.join(params.boardId, params.password))
+        flatMap(params => this.boardService.joinBoard(params.boardId, params.password))
       )
       .subscribe(output => {
       }, error => {
@@ -82,7 +82,7 @@ export class BoardComponent implements OnInit, OnDestroy {
     this.unsubscribe.next();
     this.unsubscribe.complete();
 
-    this.boardService.reset();
+    this.boardService.resetAll();
   }
 
 }

@@ -11,12 +11,12 @@ using Retrospective.Functions.Dtos;
 
 namespace Retrospective.Functions
 {
-    public class CreateBoardItemFunction : IFunction<CreateBoardItemInput>
+    public class NoGiveSyncFunction : IFunction<NoGiveSyncInput>
     {
         private readonly IBoardManager _boardManager;
         private readonly IPusher _pusher;
 
-        public CreateBoardItemFunction(
+        public NoGiveSyncFunction(
             IPusher pusher,
             IBoardManager boardManager)
         {
@@ -24,12 +24,12 @@ namespace Retrospective.Functions
             _boardManager = boardManager;
         }
 
-        public async Task InvokeAsync(CreateBoardItemInput input, TraceWriter log)
+        public async Task InvokeAsync(NoGiveSyncInput input, TraceWriter log)
         {
             var board = await _boardManager.GetAsync(input.BoardId, input.Password) ?? throw new UserFriendlyException("The board does not exist.");
 
-            var triggerResult = await _pusher.TriggerAsync(board.ToString(), BoardItem_Create.EventName, new BoardItem_Create {Type = input.Type});
-            if (triggerResult.StatusCode != HttpStatusCode.OK) throw new ApplicationException($"Cannot publish {BoardItem_Create.EventName}. {JsonConvert.SerializeObject(triggerResult)}");
+            var triggerResult = await _pusher.TriggerAsync(board.ToString(), Sync_NoGiveSync.EventName, new Sync_NoGiveSync());
+            if (triggerResult.StatusCode != HttpStatusCode.OK) throw new ApplicationException($"Cannot publish {Sync_NoGiveSync.EventName}. {JsonConvert.SerializeObject(triggerResult)}");
         }
     }
 }
